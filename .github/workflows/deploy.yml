@@ -1,0 +1,39 @@
+name: Docker CI/CD
+
+on:
+  pull_request:
+    types: [closed]
+  workflow_dispatch: # 수동 실행도 가능하도록 함
+
+# 코드의 내용을 이 파일을 실행하여 action을 수행하는 주체(Github Actions에서 사용하는 VM)가 읽을 수 있도록 허용합니다.
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    # pull 요청이 develop에 merge 되었을 때 아래 steps를 실행
+    if: github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'develop'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Code Checkout
+        uses: actions/checkout@v4
+
+      - name: Push to Docker Repo
+        run: |
+          docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+          docker build -t ${{ secrets.DOCKER_REPO }}/${{ secrets.DOCKER_PROJECT_NAME }} .
+          docker push ${{ secrets.DOCKER_REPO }}/${{ secrets.DOCKER_PROJECT_NAME }}
+
+      - name: Deploy to EC2
+        uses: appleboy/ssh-action@master
+        id: deploy
+        with:
+          host: ${{ secrets.AWS_EC2_HOST }}
+          username: ${{ secrets.AWS_EC2_USERNAME }}
+          key: ${{ secrets.AWS_EC2_SECRET_KEY }}
+          script: |
+            sudo docker kill ${{ secrets.DOCKER_PROJECT_NAME }}
+            sudo docker rm -f $(docker ps -qa)
+            sudo docker pull ${{ secrets.DOCKER_REPO }}/${{ secrets.DOCKER_PROJECT_NAME }}:latest
+            sudo docker run ${{ secrets.DOCKER_REPO }}/${{ secrets.DOCKER_PROJECT_NAME }}:latest -d -p 5000:5000 -e TZ=Asia/Seoul

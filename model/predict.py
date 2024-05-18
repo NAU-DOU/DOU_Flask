@@ -5,11 +5,9 @@ import os
 from model.get_pretrained_model import sentence_convert_data
 from transformers import TFBertModel
 
-
-
-# loaded_model = tf.keras.models.load_model(
-#     os.path.dirname(os.path.abspath(os.path.dirname(__file__))) + '/instance/st_model_240420.h5',
-#     compile=False, custom_objects={'TFBertModel': TFBertModel})
+loaded_model = tf.keras.models.load_model(
+    os.path.dirname(os.path.abspath(os.path.dirname(__file__))) + '/instance/st_model_240420.h5',
+    compile=False, custom_objects={'TFBertModel': TFBertModel})
 
 def evaluation_predict(sentence):
     data_x = sentence_convert_data(sentence)
