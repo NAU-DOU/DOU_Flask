@@ -35,8 +35,8 @@ jobs:
         id: deploy
         with:
           host: ${{ secrets.GCP_HOST }}
-          username: ${{ secrets.GCP_SECRET_KEY }}
-          key: ${{ secrets.GCP_USERNAME }}
+          username: ${{ secrets.GCP_USERNAME }}
+          key: ${{ secrets.GCP_SECRET_KEY }}
           port: 22
           script: |
             sudo docker stop $(sudo docker ps -q)
