@@ -39,6 +39,7 @@ jobs:
             sudo docker rm -f $(sudo docker ps -qa)
             sudo docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
             sudo docker pull ${{ secrets.DOCKER_REPO }}/${{ secrets.DOCKER_PROJECT_NAME }}:latest
+            echo "docker pull complete"
             sudo docker run -d -p 5000:5000 -e TZ=Asia/Seoul ${{ secrets.DOCKER_REPO }}/${{ secrets.DOCKER_PROJECT_NAME }}:latest
 
 # 실행 중인 모든 컨테이너 중지 및 삭제
