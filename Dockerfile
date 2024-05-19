@@ -1,7 +1,7 @@
 FROM python:3.10.14
 
 COPY ./requirements.txt /flaskfolder/requirements.txt
-
+COPY ./instance/ /flaskfolder/instance/
 COPY . /flaskfolder/
 
 WORKDIR /flaskfolder/
