@@ -9,6 +9,7 @@ from . import tokenization_kobert
 from transformers import BertTokenizer, BertForSequenceClassification, PreTrainedTokenizer, TFBertModel
 from tqdm import tqdm
 from sklearn.model_selection import train_test_split
+from model.storage import download_file
 
 os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
 
@@ -20,8 +21,10 @@ LABEL_COLUMN = "상황"
 
 tokenizer = tokenization_kobert.KoBertTokenizer.from_pretrained('monologg/kobert')  # pretrained 모델을 불러오기 (kobert의 monologg)
 
+model = download_file('dou-flask', '감정분류데이터셋.csv')
+
 def get_csv_data():
-    csv_data = pd.read_csv('./instance/감정분류데이터셋.csv', encoding='cp949')
+    csv_data = pd.read_csv(model, encoding='cp949')
 
     csv_data.loc[(csv_data['상황']=="happiness"), '상황'] = 0
     csv_data.loc[(csv_data['상황']=="surprise"), '상황'] = 1
