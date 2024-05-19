@@ -1,4 +1,4 @@
-name: Docker CI/CD
+name: Docker CI/CD with Google Compute Engine
 
 on:
   pull_request:
@@ -8,6 +8,10 @@ on:
 # 코드의 내용을 이 파일을 실행하여 action을 수행하는 주체(Github Actions에서 사용하는 VM)가 읽을 수 있도록 허용합니다.
 permissions:
   contents: read
+
+env:
+  GCE_INSTANCE: flask-dou
+  GCE_INSTANCE_REGION: asia-northeast3-a
 
 jobs:
   deploy:
@@ -20,19 +24,19 @@ jobs:
       - name: Code Checkout
         uses: actions/checkout@v4
 
-      - name: Push to Docker Repo
-        run: |
-          docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
-          docker build -t ${{ secrets.DOCKER_REPO }}/${{ secrets.DOCKER_PROJECT_NAME }} .
-          docker push ${{ secrets.DOCKER_REPO }}/${{ secrets.DOCKER_PROJECT_NAME }}
+      # - name: Push to Docker Repo
+      #   run: |
+      #     docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+      #     docker build -t ${{ secrets.DOCKER_REPO }}/${{ secrets.DOCKER_PROJECT_NAME }} .
+      #     docker push ${{ secrets.DOCKER_REPO }}/${{ secrets.DOCKER_PROJECT_NAME }}
 
       - name: Deploy to EC2
         uses: appleboy/ssh-action@master
         id: deploy
         with:
-          host: ${{ secrets.AWS_EC2_HOST }}
-          username: ${{ secrets.AWS_EC2_USERNAME }}
-          key: ${{ secrets.AWS_EC2_SECRET_KEY }}
+          host: ${{ secrets.GCP_HOST }}
+          username: ${{ secrets.GCP_SECRET_KEY }}
+          key: ${{ secrets.GCP_USERNAME }}
           port: 22
           script: |
             sudo docker stop $(sudo docker ps -q)
