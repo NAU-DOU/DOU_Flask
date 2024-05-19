@@ -36,7 +36,7 @@ jobs:
           port: 22
           script: |
             sudo docker stop $(sudo docker ps -q)
-            sudo docker rm -f $(docker ps -qa)
+            sudo docker rm -f $(sudo docker ps -qa)
             sudo docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
             sudo docker pull ${{ secrets.DOCKER_REPO }}/${{ secrets.DOCKER_PROJECT_NAME }}:latest
             sudo docker run -d -p 5000:5000 -e TZ=Asia/Seoul ${{ secrets.DOCKER_REPO }}/${{ secrets.DOCKER_PROJECT_NAME }}:latest
