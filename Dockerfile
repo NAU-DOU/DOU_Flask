@@ -8,7 +8,6 @@ WORKDIR /flaskfolder
 COPY requirements.txt ./
 COPY app.py ./
 COPY model/ ./model/
-COPY sentiment_model.pth ./
 
 # 의존성 설치
 RUN pip install --no-cache-dir -r requirements.txt
