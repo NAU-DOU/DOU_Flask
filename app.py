@@ -1,6 +1,6 @@
 from flask import Flask, request, jsonify
 
-from model.predict import evaluation_predict
+from model.predict_sentiment import predict
 
 app = Flask(__name__)
 
@@ -19,11 +19,11 @@ def sentiment():
   result = []
 
   for sentence in req['sentence']:
-    sent_result = evaluation_predict(sentence)
+    sent_result = predict(sentence)
     result.append(sent_result)
 
   return jsonify(data=result)
 
 if __name__ == '__main__':
-  # 배포 시 debug=False로 설정해야 함pip 
+  # 배포 시 debug=False로 설정해야 함
   app.run('localhost', port=5000, debug=False)
